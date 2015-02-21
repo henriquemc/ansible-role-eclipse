@@ -1,0 +1,33 @@
+---
+# tasks file for henriquemc.eclipse
+
+- name: download eclipse
+  get_url:
+  url="http://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/luna/SR1a/eclipse-modeling-luna-SR1a-linux-gtk-x86_64.tar.gz&mirror_id=1"
+  dest="{{ eclipse_dir_tmp }}/{{eclipse_archive}}"
+  register: eclipse_download
+
+- name: Install tar
+  apt: pkg=tar state="present"
+
+- name: Extract archive eclipse
+  command: tar xzf {{ eclipse_dir_tmp }}/{{eclipse_archive}} -C {{eclipse_base_dir}}/eclipse-{{eclipse_name}} --strip-components=1
+  when: eclipse_download.changed
+
+- name: eclipse | Stat {{eclipse_base_dir}}/eclipse-{{eclipse_name}}
+  stat: path={{eclipse_base_dir}}/eclipse-{{eclipse_name}}
+  register: eclipse_archive_extracted_present
+
+- name: eclipse | Install plugins
+  command: "{{eclipse_base_dir}}/eclipse-{{eclipse_major}}/eclipse -nosplash \
+     -application org.eclipse.equinox.p2.director \
+     -destination {{eclipse_base_dir}}/eclipse-{{eclipse_major}} \
+     -repository {{item.repository}}  \
+    -installIU {{item.features}} "
+  when: eclipse_plugins_yedit_enabled and eclipse_plugins_enabled
+  ignore_errors: True
+  with_items:
+    - { repository: 'http://download.eclipse.org/releases/{{eclipse_name}}/,http://dadacoalition.org/yedit', features: 'org.dadacoalition.yedit.feature.group' }
+    - { repository: 'testuser2', features: 'root' }
+
+
