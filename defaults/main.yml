@@ -1,9 +1,9 @@
 ---
 # defaults file for henriquemc.eclipse
-eclipse_url: 
-eclipse_dir_tmp: 
-eclipse_base_dir:
-eclipse_name:
-eclipse_major:
-
+eclipse_release_name: luna
+eclipse_release_version: SR1a
+eclipse_dir_tmp: /tmp/eclipse
+eclipse_base_dir: /home/henrique
+pluginsForInstall: 
+      - { repository: 'http://dadacoalition.org/yedit', features: 'org.dadacoalition.yedit.feature.group' }   
 
